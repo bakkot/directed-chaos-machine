@@ -17,7 +17,7 @@ pointer-events: none;
 <script src="numeric-1.2.6.js"></script> <!-- only used for solving a system of linear equations, 'cause I'm lazy --> 
 <script src="dragster.js"></script> <!-- for dragging files to work as expected. also, wtf, this should not be necessary. --> 
 <script>
-var overlay, canvas, ctx, imgScale, state;
+var overlay, canvas, ctx, imgScale, state, spaceHeld;
 var inPoints = [];
 var outPoints = [];
 var transforms = [];
@@ -58,6 +58,12 @@ function makeTransform(inPoints, outPoints) {
   return affineFactory(X1[0], X1[1], X2[0], X2[1], X1[2], X2[2]);
 }
 
+function transform(p) {
+  var ind = Math.floor(Math.random() * transforms.length);
+  return transforms[ind](p);
+}
+
+
 
 
 
@@ -69,8 +75,7 @@ function drawIFS() {
   for(var i=0; i<1000; ++i) {
     var p = {x: Math.random() * canvas.width, y: Math.random() * canvas.height};
     for(var j=0; j<1000; ++j) {
-      var ind = Math.floor(Math.random() * transforms.length);
-      p = transforms[ind](p);
+      p = transform(p);
     }
     for(var j=0; j<1000; ++j) {
       var ind = Math.floor(Math.random() * transforms.length);
@@ -78,6 +83,33 @@ function drawIFS() {
       drawPoint(p);
     }
   }
+}
+
+
+var count = 0;
+var SPEED = 20;
+var RESETEVERY = 3000;
+var SKIP = 100;
+var DELAY = 1;
+var point;
+function draw() {
+  count += SPEED;
+  if(typeof point == 'undefined' || count == RESETEVERY) {
+    point = {x: Math.random() * canvas.width, y: Math.random() * canvas.height};
+    for(var i=0; i<SKIP; ++i) {
+      var ind = Math.floor(Math.random() * transforms.length);
+      point = transform(point);
+    }
+  }
+  
+  for(var i=0; i<SPEED; ++i) {
+    point = transform(point);
+    drawPoint(point);
+  }
+  
+  if(!spaceHeld) return;
+  
+  setTimeout(draw, DELAY);
 }
 
 
@@ -144,7 +176,7 @@ function processFiles(files) {
 
 
 
-function clickH(e) {
+function click(e) {
   var p = relCoords(e, canvas);
   ctx.beginPath();
   ctx.arc(p.x,p.y,3,0,2*Math.PI);
@@ -181,15 +213,29 @@ function advance(p) {
       state = 'O1';
       break;
     case 'Done':
-      for(var i=0; i<transforms.length; ++i) {
-        p1 = transforms[i](p);
-        ctx.beginPath();
-        ctx.arc(p1.x,p1.y,3,0,2*Math.PI);
-        ctx.stroke();
-      }
       break;
     default: 
       alert('wat');
+  }
+}
+
+function keyDown(e) {
+  switch (e.which) {
+    case 32: // space
+      spaceHeld = true;
+      e.preventDefault();
+      draw();
+      break;
+    case 8: // backspace
+      e.preventDefault();
+      break;
+  }
+}
+
+function keyUp(e) {
+  if (e.which == 32) {
+    spaceHeld = false;
+    e.preventDefault();
   }
 }
 
@@ -210,7 +256,10 @@ function launch() {
   document.body.addEventListener('dragster:leave', dragLeave);
   document.body.addEventListener('drop', drop);
   
-  canvas.addEventListener('click', clickH);
+  addEventListener('keydown', keyDown);
+  addEventListener('keyup', keyUp);
+  
+  canvas.addEventListener('click', click);
   
   state = 'I1';
 }
