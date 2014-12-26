@@ -1,8 +1,110 @@
 <html>
 <head>
+<style>
+#overlay {
+background: none repeat scroll 0 0 #424242;
+height: 100%;
+width: 100%;
+position: fixed;
+top: 0;
+left: 0;
+opacity: .8;
+pointer-events: none;
+}
+</style>
 
+
+<script src="numeric-1.2.6.js"></script> <!-- only used for solving a system of linear equations, 'cause I'm lazy --> 
+<script src="dragster.js"></script> <!-- for dragging files to work as expected. also, wtf, this should not be necessary. --> 
+<script>
+var overlay, canvas, ctx, imgScale;
+var MAXWIDTH = 500;
+
+function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+function affineFactory(a, b, c, d, e, f) {
+  return function(p) {
+    return new Point(a*p.x + b*p.y + e, c*p.x + d*p.y + f);
+  }
+}
+
+
+function dragEnter(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  console.log('enter');
+  
+  overlay.style.display = 'block';
+}
+
+function dragOver(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  //console.log('over')
+}
+
+function dragLeave(e) {
+  console.log('leave')
+  overlay.style.display = 'none';
+}
+
+function drop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  console.log('drop')
+  overlay.style.display = 'none';
+  
+  processFiles(e.dataTransfer.files);
+}
+
+
+function processFiles(files) {
+  if(files.length != 1) { // todo errors
+    return;
+  }
+  if (!files[0].type.match(/image.*/)) { // todo errors
+    return;
+  }
+
+  // thanks http://stackoverflow.com/a/10209693/1644272
+  // https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications#Selecting_files_using_drag_and_drop
+  var img = new Image();
+  var src = URL.createObjectURL(files[0]);
+  img.src = src;
+  img.onload = function(){
+    console.log(img.height);
+    //var imgWidth = Math.min(img.width, MAXWIDTH);
+    imgScale = Math.min(img.width, MAXWIDTH) / img.width;
+    canvas.width = img.width * imgScale;
+    canvas.height = img.height * imgScale;
+    ctx.drawImage(img,0,0, img.width * imgScale, img.height * imgScale);
+    URL.revokeObjectURL(src);
+  }
+  //console.log(files[0])
+}
+
+
+function launch() {
+  new Dragster(document.body);
+  overlay = document.getElementById('overlay');
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
+  console.log('load');
+  document.body.addEventListener("dragster:enter", dragEnter);
+  document.body.addEventListener("dragover", dragOver);
+  document.body.addEventListener("dragster:leave", dragLeave);
+  document.body.addEventListener("drop", drop, false);
+}
+
+window.addEventListener("load", launch, false);
+
+</script>
 </head>
 <body>
-<canvas id="c" width=500 height=500></canvas>
+<div id="overlay" style="display: none"><h1>drop here!</h1></div>
+<canvas id="canvas" width=500 height=500></canvas>
 </body>
 </html>
