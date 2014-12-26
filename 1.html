@@ -59,6 +59,33 @@ function makeTransform(inPoints, outPoints) {
 }
 
 
+
+
+function drawPoint(p) {
+  ctx.fillRect(p.x, p.y, 1, 1);
+}
+
+function drawIFS() {
+  for(var i=0; i<1000; ++i) {
+    var p = {x: Math.random() * canvas.width, y: Math.random() * canvas.height};
+    for(var j=0; j<1000; ++j) {
+      var ind = Math.floor(Math.random() * transforms.length);
+      p = transforms[ind](p);
+    }
+    for(var j=0; j<1000; ++j) {
+      var ind = Math.floor(Math.random() * transforms.length);
+      p = transforms[ind](p);
+      drawPoint(p);
+    }
+  }
+}
+
+
+
+
+
+
+
 function dragEnter(e) {
   e.stopPropagation();
   e.preventDefault();
@@ -107,7 +134,9 @@ function processFiles(files) {
     imgScale = Math.min(img.width, MAXWIDTH) / img.width;
     canvas.width = img.width * imgScale;
     canvas.height = img.height * imgScale;
-    ctx.drawImage(img,0,0, img.width * imgScale, img.height * imgScale);
+    ctx.globalAlpha = 0.2;
+    ctx.drawImage(img, 0, 0, img.width * imgScale, img.height * imgScale);
+    ctx.globalAlpha = 1;
     URL.revokeObjectURL(src);
   }
   //console.log(files[0])
@@ -166,6 +195,7 @@ function advance(p) {
 
 function inputDone() {
   state = 'Done';
+  drawIFS();
 }
 
 function launch() {
