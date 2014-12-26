@@ -17,18 +17,45 @@ pointer-events: none;
 <script src="numeric-1.2.6.js"></script> <!-- only used for solving a system of linear equations, 'cause I'm lazy --> 
 <script src="dragster.js"></script> <!-- for dragging files to work as expected. also, wtf, this should not be necessary. --> 
 <script>
-var overlay, canvas, ctx, imgScale;
+var overlay, canvas, ctx, imgScale, state;
+var inPoints = [];
+var outPoints = [];
+var transforms = [];
 var MAXWIDTH = 500;
 
-function Point(x, y) {
-  this.x = x;
-  this.y = y;
+function relCoords(event, ele){
+  var rect = ele.getBoundingClientRect();
+  return {x: event.clientX - rect.left, y: event.clientY - rect.top};
 }
 
 function affineFactory(a, b, c, d, e, f) {
   return function(p) {
-    return new Point(a*p.x + b*p.y + e, c*p.x + d*p.y + f);
+    return {x: a*p.x + b*p.y + e, y: c*p.x + d*p.y + f};
   }
+}
+
+
+/* logic:
+Ax'   a b   Ax      e
+Ay' = c d   Ay    + f
+
+
+Ax' = aAx + bAy + e
+Ay' = cAx + dAy + f
+
+first computation solves for a, b, e, second for c, d, f.
+*/
+function makeTransform(inPoints, outPoints) {
+  var A = [ [inPoints[0].x, inPoints[0].y, 1],
+            [inPoints[1].x, inPoints[1].y, 1],
+            [inPoints[2].x, inPoints[2].y, 1] ];
+  var B1 = [ outPoints[0].x, outPoints[1].x, outPoints[2].x ];
+  var B2 = [ outPoints[0].y, outPoints[1].y, outPoints[2].y ];
+  
+  var X1 = numeric.solve(A, B1);
+  var X2 = numeric.solve(A, B2);
+  
+  return affineFactory(X1[0], X1[1], X2[0], X2[1], X1[2], X2[2]);
 }
 
 
@@ -87,19 +114,74 @@ function processFiles(files) {
 }
 
 
+
+function clickH(e) {
+  var p = relCoords(e, canvas);
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,3,0,2*Math.PI);
+  ctx.stroke();
+  advance(p);
+}
+
+function advance(p) {
+  switch (state) {
+    case 'I1':
+      inPoints[0] = p;
+      state = 'I2';
+      break;
+    case 'I2':
+      inPoints[1] = p;
+      state = 'I3';
+      break;
+    case 'I3':
+      inPoints[2] = p;
+      state = 'O1';
+      break;
+    case 'O1':
+      outPoints[0] = p;
+      state = 'O2';
+      break;
+    case 'O2':
+      outPoints[1] = p;
+      state = 'O3';
+      break;
+    case 'O3':
+      outPoints[2] = p;
+      state = 'Done';
+      console.log(inPoints, outPoints);
+      transforms.push(makeTransform(inPoints, outPoints));
+      break;
+    case 'Done':
+      p1 = transforms[0](p);
+      ctx.beginPath();
+      ctx.arc(p1.x,p1.y,3,0,2*Math.PI);
+      ctx.stroke();
+      break;
+    default: 
+      alert('wat');
+  }
+  
+  
+}
+
 function launch() {
   new Dragster(document.body);
   overlay = document.getElementById('overlay');
   canvas = document.getElementById('canvas');
   ctx = canvas.getContext('2d');
   console.log('load');
-  document.body.addEventListener("dragster:enter", dragEnter);
-  document.body.addEventListener("dragover", dragOver);
-  document.body.addEventListener("dragster:leave", dragLeave);
-  document.body.addEventListener("drop", drop, false);
+  
+  document.body.addEventListener('dragster:enter', dragEnter);
+  document.body.addEventListener('dragover', dragOver);
+  document.body.addEventListener('dragster:leave', dragLeave);
+  document.body.addEventListener('drop', drop);
+  
+  canvas.addEventListener('click', clickH);
+  
+  state = 'I1';
 }
 
-window.addEventListener("load", launch, false);
+window.addEventListener('load', launch, false);
 
 </script>
 </head>
