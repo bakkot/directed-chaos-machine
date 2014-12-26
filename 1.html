@@ -147,21 +147,25 @@ function advance(p) {
       break;
     case 'O3':
       outPoints[2] = p;
-      state = 'Done';
-      console.log(inPoints, outPoints);
       transforms.push(makeTransform(inPoints, outPoints));
+      outPoints = [];
+      state = 'O1';
       break;
     case 'Done':
-      p1 = transforms[0](p);
-      ctx.beginPath();
-      ctx.arc(p1.x,p1.y,3,0,2*Math.PI);
-      ctx.stroke();
+      for(var i=0; i<transforms.length; ++i) {
+        p1 = transforms[i](p);
+        ctx.beginPath();
+        ctx.arc(p1.x,p1.y,3,0,2*Math.PI);
+        ctx.stroke();
+      }
       break;
     default: 
       alert('wat');
   }
-  
-  
+}
+
+function inputDone() {
+  state = 'Done';
 }
 
 function launch() {
