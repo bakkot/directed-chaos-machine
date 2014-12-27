@@ -67,13 +67,58 @@ h2 {
   height: 10px; /* remember to modify highlight() as well*/
   width: 10px;
 }
+
+
+
+/* http://stackoverflow.com/a/11561235/1644272 */
+.matrix {
+    position: relative;
+    margin: 10px;
+    display: inline-table;
+    vertical-align: middle
+}
+
+.matrix:before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: 0;
+    border: 1px solid #000;
+    border-right: 0px;
+    width: 4px;
+    height: 100%;
+}
+.matrix:after {
+    content: "";
+    position: absolute;
+    right: -4px;
+    top: 0;
+    border: 1px solid #000;
+    border-left: 0px;
+    width: 4px;
+    height: 100%;
+}
+.matrix td {
+    padding: 3px;    
+    text-align: center;
+}
+
+
+.reference-transform {
+  display: none;
+}
+
+.transform-div:first-child > .remove-button {
+  display: none;
+}
+
 </style>
 
 
 <script src="numeric-1.2.6.js"></script> <!-- only used for solving a system of linear equations, 'cause I'm lazy --> 
 <script src="dragster.js"></script> <!-- for dragging files to work as expected. also, wtf, this should not be necessary. --> 
 <script>
-var overlay, canvasOverlay, spotlight, canvas, ctx, imgScale, state, spaceHeld;
+var drag, overlay, transformsEle, refTransEle, canvasOverlay, spotlight, canvas, ctx, imgScale, state, spaceHeld;
 var inPoints = [];
 var outPoints = [];
 var transforms = [];
@@ -92,13 +137,14 @@ function affineFactory(a, b, c, d, e, f) {
 
 
 /* logic:
-Ax'   a b   Ax      e
-Ay' = c d   Ay    + f
+x'   a b   x      e
+y' = c d   y    + f
 
 
-Ax' = aAx + bAy + e
-Ay' = cAx + dAy + f
+x' = ax + by + e
+y' = cx + dy + f
 
+given 3 x,y -> x',y' pairs, can solve for a,b,c,d,e,f
 first computation solves for a, b, e, second for c, d, f.
 */
 function makeTransform(inPoints, outPoints) {
@@ -176,13 +222,33 @@ function dragLeave(e) {
 function drop(e) {
   e.stopPropagation();
   e.preventDefault();
+  drag.reset();
   overlay.style.display = 'none';
   
   processFiles(e.dataTransfer.files);
 }
 
 
+function addTransform(button) {
+  var before = null;
+  if(button) {
+    before = button.parentElement.nextSibling;
+  }
+  transformsEle.insertBefore(refTransEle.firstElementChild.cloneNode(true), before);
+}
+
+function removeTransform(button) {
+  transformsEle.removeChild(button.parentElement);
+}
+
+
 function reset() {
+  while(transformsEle.firstChild) {
+    transformsEle.removeChild(transformsEle.firstChild);
+  }
+  addTransform();
+  
+
   canvas.width = canvas.height = 500; // also resets
   canvasOverlay.style.width = canvas.width + 4;
   canvasOverlay.style.height = canvas.height + 4;
@@ -300,7 +366,6 @@ function advance(p) {
 }
 
 function keyDown(e) {
-  console.log(e)
   switch (e.which) {
     case 32: // space
       spaceHeld = true;
@@ -310,7 +375,7 @@ function keyDown(e) {
     case 82: // r
       reset()
       break;
-    case 8: // backspace
+    case 85: // u; backspace = 8
       e.preventDefault();
       break;
   }
@@ -324,8 +389,10 @@ function keyUp(e) {
 }
 
 function launch() {
-  new Dragster(document.body);
+  drag = new Dragster(document.body);
   overlay = document.getElementById('overlay');
+  transformsEle = document.getElementById("transforms");
+  refTransEle = document.querySelector(".reference-transform");
   canvasOverlay = document.getElementById('can-overlay');
   spotlight = document.getElementById('spotlight');
   canvas = document.getElementById('canvas');
@@ -342,7 +409,7 @@ function launch() {
   
   canvas.addEventListener('click', click);
   
-  state = 'I1';
+  reset();
 }
 
 window.addEventListener('load', launch, false);
@@ -364,6 +431,56 @@ window.addEventListener('load', launch, false);
 remember you are mechanical, not only in the ball and socket of your shoulders, or the resilient padding of your knees, but are in fact built from hinges, gears, and switches all the way into to your smallest bits
 
 </ol>
+</div>
+
+</div>
+
+
+<div id="transforms"></div>
+
+<div class="reference-transform">
+
+<div class="transform-div">
+<em>w: </em> <input size=3 class="w"/> ;
+<table class="matrix">
+<tr>
+<td><em>x&prime;</em></td>
+</tr>
+<tr>
+<td><em>y&prime;</em></td>
+</tr>
+</table>
+=
+<table class="matrix">
+<tr>
+<td><input size=3 class="a"/></td>
+<td><input size=3 class="b"/></td>
+</tr>
+<tr>
+<td><input size=3 class="c"/></td>
+<td><input size=3 class="d"/></td>
+</tr>
+</table>
+
+<table class="matrix"  style="margin-left:-2px">
+<tr>
+<td><em>x</em></td>
+</tr>
+<tr>
+<td><em>y</em></td>
+</tr>
+</table>
++
+<table class="matrix">
+<tr>
+<td><input size=3 class="e"/></td>
+</tr>
+<tr>
+<td><input size=3 class="f"/></td>
+</tr>
+</table>
+<button onclick="addTransform(this)">+</button>
+<button class="remove-button" onclick="removeTransform(this)">-</button>
 </div>
 
 </div>
