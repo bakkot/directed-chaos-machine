@@ -57,7 +57,19 @@ function makeTransform(inPoints, outPoints) {
 }
 
 function transform(p) {
-  var ind = Math.floor(Math.random() * transforms.length);
+  //var ind = Math.floor(Math.random() * transforms.length);
+  var weightsum = 0;
+  for(var i=0; i<transforms.length; ++i) { //todo move elsewhere
+    weightsum += transforms[i].w;
+  }
+  var r = Math.random(), ind = 0;
+  for(var i=0; i<transforms.length; ++i) {
+    if(r < transforms[i].w/weightsum) {
+      ind = i;
+      break;
+    }
+    r -= transforms[i].w/weightsum;
+  }
   return transforms[ind](p);
 }
 
@@ -85,7 +97,6 @@ function draw() {
   if(typeof point == 'undefined') {
     point = {x: Math.random() * canvas.width, y: Math.random() * canvas.height};
     for(var i=0; i<SKIP; ++i) {
-      var ind = Math.floor(Math.random() * transforms.length);
       point = transform(point);
     }
   }
