@@ -189,8 +189,8 @@ function transform(p) {
 
 
 function highlight(p) {
-  spotlight.style.left = p.x+2-10/2;
-  spotlight.style.top = p.y+2-10/2;
+  spotlight.style.left = (p.x+2-10/2) + 'px';
+  spotlight.style.top = (p.y+2-10/2) + 'px';
 }
 
 function drawPoint(p) {
@@ -526,7 +526,7 @@ window.addEventListener('load', launch, false);
 <div id="textdiv">
 <h2>Instructions</h2>
 remember you are mechanical, not only in the ball and socket of your shoulders, or the resilient padding of your knees, but are in fact built from hinges, gears, and switches all the way into to your smallest bits
-<ol start="0">
+<ol style="list-style-position:inside" start="0">
 <li>Optionally drag and drop a self-similar image from your computer to use as a reference. Otherwise just use the images in your head.</li>
 <li></li>
 </ol>
