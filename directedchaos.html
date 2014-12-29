@@ -39,7 +39,8 @@
     <li>Optionally adjust the weights of each transition.</li>
     <li>Hold space.</li>
   </ol>
-
+  Hit 'c' to clear the canvas, 'r' to reset everything. You can also manually enter affine transformations below.
+  
   <h2>Examples</h2>
   <ul id="examples">
     <li class="reference-example"><a href="" class="ex-name"></a>: <span class="ex-desc"></span></li>
@@ -47,7 +48,7 @@
 
 </div>
 
-<hr width="90%">
+<hr class="first-rule">
 
 <h2>What is this</h2>
 
@@ -57,13 +58,13 @@ To let you enter your own IFS, we need some way of specifying mappings. Doing th
 
 If you use a reference image, and specify your points such that the full image is mapped to its components, then Barnsley's <a href="https://en.wikipedia.org/wiki/Collage_theorem">Collage theorem</a> guarantees that the attractor of the resulting IFS will be close to the original image.
 
-<h4>A word on weights</h3>
+<h4>A word on weights</h4>
 Strictly speaking, as long as they are positive, the probability with which you select each mapping has no effect on the attractor: each point is either contained with 100% probability or is not. Since we're only going to do finitely many iterations, however, the probabilities do matter, and can dramatically effect the image. For example, try running the Barsley Fern example, then clearing the canvas and setting the weights to 1 then drawing again (just by holding space; running the example again will reset the weights).
 
-<hr width="70%" style="margin-top: 40px;">
+<hr class="second-rule">
 
 <div class="footer">
-I'm <a href="github.com/bakkot">Kevin Gibbons</a>. Currently looking for a 2015 summer internship in the Pennisula/South Bay region &mdash; Python, C++, Scala, JavaScript, Go, whatever. Send me an email!<br>
+I'm <a href="https://github.com/bakkot">Kevin Gibbons</a>. Currently looking for a 2015 summer internship in the Pennisula/South Bay region &mdash; Python, C++, Scala, JavaScript, Go, whatever. Send me an email!<br>
   
 This page uses <a href="http://numericjs.com/">NumericJS</a> for a single matrix calculation I was too lazy to hardcode and <a href="http://bensmithett.github.io/dragster/">Dragster</a> to render sane the drag/drop behavior.
 </div>

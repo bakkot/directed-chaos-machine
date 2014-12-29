@@ -33,11 +33,6 @@ li {
   padding: 3px;
 }
 
-hr {
-  margin-top: 20px;
-}
-
-
 canvas {
   border-style: solid;
   border-width: 2px;
@@ -146,4 +141,19 @@ h2 {
 .footer {
   text-align: center;
   font-size: small;
+}
+
+.first-rule {
+  margin-top: 20px;
+  width: 90%
+}
+
+.second-rule {
+  margin-top: 40px;
+  margin-bottom: 15px;
+  width: 60%
+}
+
+.second-rule {
+  
 }

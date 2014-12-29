@@ -250,7 +250,7 @@ function runExample(id) {
   }
 
   if(exObj.bg) {
-    loadImg(exObj.bg, callback);
+    loadImg('images/' + exObj.bg, callback);
   }
   else {
     callback();
