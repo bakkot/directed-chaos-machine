@@ -1,4 +1,4 @@
-var drag, overlay, transformsEle, refTransEle, canvasOverlay, spotlight, canvas, ctx, imgScale, state, spaceHeld;
+var drag, dragOverlay, transformsEle, refTransEle, canvasOverlay, spotlight, canvas, ctx, imgScale, state, spaceHeld;
 var inPoints = [];
 var outPoints = [];
 var transforms = [];
@@ -58,17 +58,17 @@ function makeTransform(inPoints, outPoints) {
 
 function transform(p) {
   //var ind = Math.floor(Math.random() * transforms.length);
-  var weightsum = 0;
+  var weightSum = 0;
   for(var i=0; i<transforms.length; ++i) { //todo move elsewhere
-    weightsum += transforms[i].w;
+    weightSum += transforms[i].w;
   }
   var r = Math.random(), ind = 0;
   for(var i=0; i<transforms.length; ++i) {
-    if(r < transforms[i].w/weightsum) {
+    if(r < transforms[i].w/weightSum) {
       ind = i;
       break;
     }
-    r -= transforms[i].w/weightsum;
+    r -= transforms[i].w/weightSum;
   }
   return transforms[ind](p);
 }
@@ -77,11 +77,6 @@ function transform(p) {
 // ************************** DRAWING **************************
 
 
-
-function highlight(p) {
-  spotlight.style.left = (p.x+2-10/2) + 'px';
-  spotlight.style.top = (p.y+2-10/2) + 'px';
-}
 
 function drawPoint(p) {
   ctx.fillRect(p.x, p.y, 1, 1);
@@ -94,6 +89,9 @@ var DELAY = 1;
 var point;
 
 function draw() {
+  if(transforms.length == 0) {
+    return;
+  }
   if(typeof point == 'undefined') {
     point = {x: Math.random() * canvas.width, y: Math.random() * canvas.height};
     for(var i=0; i<SKIP; ++i) {
@@ -189,6 +187,7 @@ function advance(p) {
       ctx.stroke();
       ctx.closePath();
       transforms.push(makeTransform(inPoints, outPoints));
+      console.log(outPoints);
       outPoints = [];
       updateTransEles();
       state = 'O1';
@@ -208,7 +207,7 @@ function dragEnter(e) {
   e.stopPropagation();
   e.preventDefault();
   
-  overlay.style.display = 'block';
+  dragOverlay.style.display = 'block';
 }
 
 function dragOver(e) {
@@ -217,21 +216,20 @@ function dragOver(e) {
 }
 
 function dragLeave(e) {
-  overlay.style.display = 'none';
+  dragOverlay.style.display = 'none';
 }
 
 function drop(e) {
   e.stopPropagation();
   e.preventDefault();
   drag.reset();
-  overlay.style.display = 'none';
+  dragOverlay.style.display = 'none';
   
   processFiles(e.dataTransfer.files);
 }
 
 function click(e) {
   var p = relCoords(e, canvas);
-  highlight(p);
   advance(p);
 }
 
@@ -262,6 +260,25 @@ function keyUp(e) {
 }
 
 
+// thanks http://stackoverflow.com/a/10209693/1644272
+// https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications#Selecting_files_using_drag_and_drop
+function loadImg(src, callback) {
+  var img = new Image();
+  img.src = src;
+  img.onload = function() {
+    reset();
+    imgScale = Math.min(img.width, MAXWIDTH) / img.width;
+    canvas.width = img.width * imgScale + 10;
+    canvas.height = img.height * imgScale + 10;
+    canvasOverlay.style.width = (canvas.width + 4) + 'px';
+    canvasOverlay.style.height = (canvas.height) + 4 + 'px';
+    ctx.globalAlpha = 0.2;
+    ctx.drawImage(img, 5, 5, img.width * imgScale, img.height * imgScale);
+    ctx.globalAlpha = 1;
+    callback();
+  }
+}
+
 function processFiles(files) {
   if(files.length != 1) { // todo errors
     return;
@@ -270,24 +287,8 @@ function processFiles(files) {
     return;
   }
 
-  // thanks http://stackoverflow.com/a/10209693/1644272
-  // https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications#Selecting_files_using_drag_and_drop
-  var img = new Image();
   var src = URL.createObjectURL(files[0]);
-  img.src = src;
-  img.onload = function(){
-    reset();
-    imgScale = Math.min(img.width, MAXWIDTH) / img.width;
-    canvas.width = img.width * imgScale + 10;
-    canvas.height = img.height * imgScale + 10;
-    canvasOverlay.style.width = (canvas.width + 4) + 'px';
-    canvasOverlay.style.height = (canvas.height) + 4 + 'px';
-    console.log(canvasOverlay.width)
-    ctx.globalAlpha = 0.2;
-    ctx.drawImage(img, 5, 5, img.width * imgScale, img.height * imgScale);
-    ctx.globalAlpha = 1;
-    URL.revokeObjectURL(src);
-  }
+  loadImg(src, function(){URL.revokeObjectURL(src);});
 }
 
 
@@ -342,12 +343,12 @@ function updateTransEles() {
   
   for(var i=0; i<transforms.length; ++i) {
     var t = transformsEle.children[i];
-    t.querySelector('.a').value = transforms[i].a;
-    t.querySelector('.b').value = transforms[i].b;
-    t.querySelector('.c').value = transforms[i].c;
-    t.querySelector('.d').value = transforms[i].d;
-    t.querySelector('.e').value = transforms[i].e;
-    t.querySelector('.f').value = transforms[i].f;
+    t.querySelector('.a').value = transforms[i].a.toFixed(6);
+    t.querySelector('.b').value = transforms[i].b.toFixed(6);
+    t.querySelector('.c').value = transforms[i].c.toFixed(6);
+    t.querySelector('.d').value = transforms[i].d.toFixed(6);
+    t.querySelector('.e').value = transforms[i].e.toFixed(6);
+    t.querySelector('.f').value = transforms[i].f.toFixed(6);
     t.querySelector('.w').value = transforms[i].w;
   }
 
@@ -373,7 +374,7 @@ function transEleKeypress(e) {
 
 function launch() {
   drag = new Dragster(document.body);
-  overlay = document.getElementById('overlay');
+  dragOverlay = document.getElementById('drag-overlay');
   transformsEle = document.getElementById("transforms");
   refTransEle = document.querySelector(".reference-transform");
   canvasOverlay = document.getElementById('can-overlay');

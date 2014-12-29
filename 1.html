@@ -7,12 +7,14 @@
 
 <script type="text/javascript" src="numeric-1.2.6.js"></script> <!-- only used for solving a system of linear equations, 'cause I'm lazy --> 
 <script type="text/javascript" src="dragster.js"></script> <!-- for dragging files to work as expected. also, wtf, this should not be necessary. --> 
+<script type="text/javascript" src="dcm-examples.js"></script>
 <script type="text/javascript" src="dcm.js"></script>
 
 </script>
 </head>
 <body>
-<div id="overlay" ><h1>drop here!</h1></div>
+<div id="drag-overlay"><h1>drop here!</h1></div>
+<div id="ex-overlay"></div>
 
 <div id="meta">
 <div id="candiv">
@@ -32,6 +34,7 @@ remember you are mechanical, not only in the ball and socket of your shoulders, 
 <li>Optionally drag and drop a self-similar image from your computer to use as a reference. Otherwise just use the images in your head. Or click at random. I won't judge.</li>
 <li>Click on three reference points in full image.</li>
 <li>For each smaller copy of the full image, click the same three points in the same order.</li>
+<li>Optionally adjust the weights of each transition.</li>
 <li>Hold space.</li>
 </ol>
 </div>
@@ -80,8 +83,8 @@ remember you are mechanical, not only in the ball and socket of your shoulders, 
 <tr>
 <td><input size=3 class="f"/></td>
 </tr>
-</table>
-<button onclick="addTransform(this)">+</button>
+</table>; 
+<button style="margin-left:8px" onclick="addTransform(this)">+</button>
 <button class="remove-button" onclick="removeTransform(this)">-</button>
 </div>
 

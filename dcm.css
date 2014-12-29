@@ -1,6 +1,19 @@
-#overlay {
+#drag-overlay {
   display: none;
-  background: none repeat scroll 0 0 #424242;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 200;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /*opacity: .8;*/
+  pointer-events: none;
+}
+
+#ex-overlay {
+  display: none;
+  background-color: rgba(0,0,0,0.5);
   z-index: 100;
   height: 100%;
   width: 100%;
@@ -8,15 +21,25 @@
   top: 0;
   left: 0;
   /*opacity: .8;*/
-  background-color: rgba(0,0,0,0.5);
-  pointer-events: none;
-  
 }
+
+.w {
+  position: relative;
+}
+
+li {
+  background-color: white;
+  position: relative;
+}
+
 
 canvas {
   border-style: solid;
   border-width: 2px;
   border-color: #aaa;
+  background-color: white;
+  position: relative;
+  z-index: 150;
 }
 
 
@@ -51,20 +74,22 @@ h2 {
   position: absolute;
   height: 504px;
   width: 504px;
-  z-index: 10;
+  z-index: 160;
   pointer-events: none;
   overflow: hidden;
+  display: none;
 }
 
 #spotlight {
   position: absolute;
-  left: -20;
-  right: -20;
+  left: -20px;
+  right: -20px;
   background-color:  rgba(255,255,255,0);
   border-radius: 500px;
   box-shadow: 0px 0px 0px 1000px rgba(0,0,0,0.5); /*0px 0px 0px 3px rgba(135,206,250,0.9), */
   height: 10px; /* remember to modify highlight() as well*/
   width: 10px;
+  z-index: 170;
 }
 
 
