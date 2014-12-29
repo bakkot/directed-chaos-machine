@@ -47,7 +47,26 @@
 
 </div>
 
+<hr width="90%">
 
+<h2>What is this</h2>
+
+An <a href="https://en.wikipedia.org/wiki/Iterated_function_system">iterated function system</a> (IFS) is just a collection of mappings; by repeatedly applying them, the set of points ultimately reached (the attractor) is necessarily a fractal (in the following strict sense: the whole is precisely equal to the union of finitely many copies of itself. Under this definition, objects like the Mandelbrot set are not fractals). One of the easiest ways of drawing the attractor of an IFS is the <a href="https://en.wikipedia.org/wiki/Chaos_game">chaos game</a>, which consists of taking a point, applying one of the mappings at random, drawing the result, applying another random mapping to the result, drawing the new result, and so on, for many thousands of iterations.
+
+To let you enter your own IFS, we need some way of specifying mappings. Doing this in general is, obviously, hard, so we restrict ourselves to affine mappings, which can be fully specified by specifying three points and the place that the desired mapping sends each of them.
+
+If you use a reference image, and specify your points such that the full image is mapped to its components, then Barnsley's <a href="https://en.wikipedia.org/wiki/Collage_theorem">Collage theorem</a> guarantees that the attractor of the resulting IFS will be close to the original image.
+
+<h4>A word on weights</h3>
+Strictly speaking, as long as they are positive, the probability with which you select each mapping has no effect on the attractor: each point is either contained with 100% probability or is not. Since we're only going to do finitely many iterations, however, the probabilities do matter, and can dramatically effect the image. For example, try running the Barsley Fern example, then clearing the canvas and setting the weights to 1 then drawing again (just by holding space; running the example again will reset the weights).
+
+<hr width="70%" style="margin-top: 40px;">
+
+<div class="footer">
+I'm <a href="github.com/bakkot">Kevin Gibbons</a>. Currently looking for a 2015 summer internship in the Pennisula/South Bay region &mdash; Python, C++, Scala, JavaScript, Go, whatever. Send me an email!<br>
+  
+This page uses <a href="http://numericjs.com/">NumericJS</a> for a single matrix calculation I was too lazy to hardcode and <a href="http://bensmithett.github.io/dragster/">Dragster</a> to render sane the drag/drop behavior.
+</div>
 
 <div class="reference-transform">
 

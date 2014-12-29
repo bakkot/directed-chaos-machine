@@ -33,6 +33,10 @@ li {
   padding: 3px;
 }
 
+hr {
+  margin-top: 20px;
+}
+
 
 canvas {
   border-style: solid;
@@ -63,8 +67,8 @@ canvas {
 }
 
 h2 {
-  margin-top: 5px;
-  margin-bottom: 0px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 #can-overlay {
@@ -137,4 +141,9 @@ h2 {
 
 .transform-div:first-child > .remove-button {
   display: none;
+}
+
+.footer {
+  text-align: center;
+  font-size: small;
 }
