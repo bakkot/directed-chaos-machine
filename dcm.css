@@ -30,6 +30,7 @@
 li {
   background-color: white;
   position: relative;
+  padding: 3px;
 }
 
 
@@ -43,10 +44,6 @@ canvas {
 }
 
 
-#meta {
-  width: 100%;
-  display: inline-block;
-}
 
 #candiv {
   /*float: left;*/
@@ -90,6 +87,7 @@ h2 {
   height: 10px; /* remember to modify highlight() as well*/
   width: 10px;
   z-index: 170;
+  pointer-events: none;
 }
 
 
@@ -131,6 +129,11 @@ h2 {
 .reference-transform {
   display: none;
 }
+
+.reference-example {
+  display: none;
+}
+
 
 .transform-div:first-child > .remove-button {
   display: none;

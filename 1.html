@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
 <title>Directed Chaos Machine</title>
 
 <link rel="stylesheet" type="text/css" href="dcm.css">
@@ -10,34 +12,38 @@
 <script type="text/javascript" src="dcm-examples.js"></script>
 <script type="text/javascript" src="dcm.js"></script>
 
-</script>
 </head>
+
+
 <body>
 <div id="drag-overlay"><h1>drop here!</h1></div>
 <div id="ex-overlay"></div>
 
-<div id="meta">
-<div id="candiv">
-<div id="can-overlay">
-<div id="spotlight"></div>
-</div>
-<canvas id="canvas" width=500 height=500></canvas>
-<div id="transforms"></div>
 
+<div id="candiv">
+  <div id="can-overlay">
+    <div id="spotlight"></div>
+  </div>
+  <canvas id="canvas" width=500 height=500></canvas>
+  <div id="transforms"></div>
 </div>
 
 
 <div id="textdiv">
-<h2>Instructions</h2>
-remember you are mechanical, not only in the ball and socket of your shoulders, or the resilient padding of your knees, but are in fact built from hinges, gears, and switches all the way into to your smallest bits
-<ol start="0">
-<li>Optionally drag and drop a self-similar image from your computer to use as a reference. Otherwise just use the images in your head. Or click at random. I won't judge.</li>
-<li>Click on three reference points in full image.</li>
-<li>For each smaller copy of the full image, click the same three points in the same order.</li>
-<li>Optionally adjust the weights of each transition.</li>
-<li>Hold space.</li>
-</ol>
-</div>
+  <h2>Instructions</h2>
+  remember you are mechanical, not only in the ball and socket of your shoulders, or the resilient padding of your knees, but are in fact built from hinges, gears, and switches all the way into to your smallest bits
+  <ol start="0">
+    <li>Optionally drag and drop a self-similar image from your computer to use as a reference. Otherwise just use the images in your head. Or click at random. I won't judge.</li>
+    <li>Click on three reference points in full image.</li>
+    <li>For each smaller copy of the full image, click the same three points in the same order.</li>
+    <li>Optionally adjust the weights of each transition.</li>
+    <li>Hold space.</li>
+  </ol>
+
+  <h2>Examples</h2>
+  <ul id="examples">
+    <li class="reference-example"><a href="" class="ex-name"></a>: <span class="ex-desc"></span></li>
+  </ul>
 
 </div>
 
@@ -45,50 +51,51 @@ remember you are mechanical, not only in the ball and socket of your shoulders, 
 
 <div class="reference-transform">
 
-<div class="transform-div">
-<em>w: </em> <input size=3 class="w"/> ;
-<table class="matrix">
-<tr>
-<td><em>x&prime;</em></td>
-</tr>
-<tr>
-<td><em>y&prime;</em></td>
-</tr>
-</table>
-=
-<table class="matrix">
-<tr>
-<td><input size=3 class="a"/></td>
-<td><input size=3 class="b"/></td>
-</tr>
-<tr>
-<td><input size=3 class="c"/></td>
-<td><input size=3 class="d"/></td>
-</tr>
-</table>
+  <div class="transform-div">
+    <em>w: </em> <input size=3 class="w"/>
+    ;
+    <table class="matrix">
+      <tr>
+        <td><em>x&prime;</em></td>
+      </tr>
+      <tr>
+        <td><em>y&prime;</em></td>
+      </tr>
+    </table>
+    =
+    <table class="matrix">
+      <tr>
+        <td><input size=3 class="a"/></td>
+        <td><input size=3 class="b"/></td>
+      </tr>
+      <tr>
+        <td><input size=3 class="c"/></td>
+        <td><input size=3 class="d"/></td>
+      </tr>
+    </table>
 
-<table class="matrix"  style="margin-left:-2px">
-<tr>
-<td><em>x</em></td>
-</tr>
-<tr>
-<td><em>y</em></td>
-</tr>
-</table>
-+
-<table class="matrix">
-<tr>
-<td><input size=3 class="e"/></td>
-</tr>
-<tr>
-<td><input size=3 class="f"/></td>
-</tr>
-</table>; 
-<button style="margin-left:8px" onclick="addTransform(this)">+</button>
-<button class="remove-button" onclick="removeTransform(this)">-</button>
+    <table class="matrix"  style="margin-left:-2px">
+      <tr>
+        <td><em>x</em></td>
+      </tr>
+      <tr>
+        <td><em>y</em></td>
+      </tr>
+    </table>
+    +
+    <table class="matrix">
+      <tr>
+        <td><input size=3 class="e"/></td>
+      </tr>
+      <tr>
+        <td><input size=3 class="f"/></td>
+      </tr>
+    </table> 
+    ;
+    <button style="margin-left:8px" onclick="addTransform(this)">+</button>
+    <button class="remove-button" onclick="removeTransform(this)">-</button>
+  </div>
+
 </div>
-
-</div>
-
 </body>
 </html>

@@ -396,7 +396,13 @@ function launch() {
   transformsEle.addEventListener('change', transEleChange);
   transformsEle.addEventListener('keypress', transEleKeypress);
   
+  makeExamples();
   reset();
+  
+  var hash = location.hash.substr(1);
+  if(typeof exampleIndices[hash] != 'undefined') {
+    runExample(hash);
+  }
 }
 
 window.addEventListener('load', launch, false);
